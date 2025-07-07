@@ -4,12 +4,31 @@ import Home from './pages'
 import OfferPage from './pages/offer/[id]'
 import WebApp from '@twa-dev/sdk'
 
+declare global {
+  interface Window {
+    Telegram: any
+  }
+}
+
 function App() {
   useEffect(() => {
-    WebApp.ready()        // Показываем Telegram UI
-    WebApp.expand()       // Разворачиваем Web App
-    console.log(WebApp.initDataUnsafe) // ← можно отдать на backend
-  }, [])
+  const WebApp = window.Telegram.WebApp
+
+  const handleClick = () => {
+    WebApp.sendData('user_data')
+  }
+
+  WebApp.ready()
+  WebApp.expand()
+  WebApp.MainButton.setText('📩 Отправить')
+  WebApp.MainButton.onClick(handleClick)
+  WebApp.MainButton.show()
+
+  return () => {
+    WebApp.MainButton.offClick(handleClick)
+    WebApp.MainButton.hide()
+  }
+}, [])
 
   return (
     <BrowserRouter>
@@ -18,6 +37,7 @@ function App() {
         <Route path="/offer/:id" element={<OfferPage />} />
       </Routes>
     </BrowserRouter>
-  ) 
+  )
 }
+
 export default App
