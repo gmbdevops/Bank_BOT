@@ -120,6 +120,26 @@ bot.action('back:categories', async ctx => {
 bot.command('webapp', ctx => {
   return ctx.reply(`🧭 Открыть WebApp: ${WEBAPP_URL}`)
 })
+import { saveLinksForUser } from './memory-store'
+
+bot.command('setlinks', async ctx => {
+  await ctx.reply('📥 Отправь список ссылок, по одной на строку:\n\nПример:\nhttps://ref.link/offer1\nhttps://ref.link/offer2')
+})
+
+bot.on('text', async ctx => {
+  if (ctx.message.text.startsWith('/')) return // игнорируем команды
+
+  const lines = ctx.message.text.trim().split(/\s*\n\s*/)
+
+  const valid = lines.filter(link => /^https?:\/\/.+/.test(link))
+
+  if (valid.length > 0) {
+    saveLinksForUser(ctx.from.id, valid)
+    await ctx.reply(`✅ Сохранил ${valid.length} ссылок. Теперь в WebApp будут отображаться они!`)
+  } else {
+    await ctx.reply('❌ Ошибка: каждая ссылка должна начинаться с http:// или https://')
+  }
+})
 
 bot.launch()
 console.log('🤖 Бот запущен и работает!')

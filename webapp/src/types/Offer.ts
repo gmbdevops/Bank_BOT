@@ -5,5 +5,5 @@ export interface Offer {
   category: 'ua' | 'world' | 'crypto'
   link: string
   image: string
-  features?: string[]
+   features?: string[]  // вот тут важно: `?` говорит, что поле не обязательно
 }

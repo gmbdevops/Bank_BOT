@@ -6,11 +6,11 @@
     "rootDir": "./",
     "outDir": "./dist",
     "strict": true,
+    "types": ["node"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./types", "./node_modules/@types"],
     "baseUrl": "./",
     "paths": {
       "@/*": ["*"]

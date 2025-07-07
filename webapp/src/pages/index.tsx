@@ -1,21 +1,46 @@
-import { useState } from 'react'
-import CategoryTabs from '../components/CategoryTabs'
+import { useEffect, useState } from 'react'
+import { Offer } from '../types/Offer'
+import { CategoryTabs } from '../components/CategoryTabs'
 import { OfferCard } from '../components/OfferCard'
 import { useOffers } from '../hooks/useOffers'
-import { Loader } from '../components/Loader'
+import WebApp from '@twa-dev/sdk'
 
-export default function Home() {
-  const [category, setCategory] = useState<'ua' | 'world' | 'crypto'>('ua')
+type Category = 'ua' | 'world' | 'crypto'
+
+export default function HomePage() {
+  const [category, setCategory] = useState<Category>('ua')
   const { offers, loading } = useOffers(category)
+  const [customLinks, setCustomLinks] = useState<string[] | null>(null)
+
+  useEffect(() => {
+    WebApp.expand()
+    WebApp.ready()
+    document.body.style.background = WebApp.themeParams.bg_color || '#fff'
+
+    const userId = WebApp.initDataUnsafe?.user?.id
+    if (userId) {
+      fetch(`/api/links/${userId}`)
+        .then(res => res.json())
+        .then(data => setCustomLinks(data.links))
+        .catch(() => setCustomLinks(null))
+    }
+  }, [])
 
   return (
-    <div className="p-4 flex flex-col items-center">
+    <div className="min-h-screen bg-white dark:bg-gray-900 p-4 pb-[15vh]">
       <CategoryTabs selected={category} onSelect={setCategory} />
+
       {loading ? (
-        <Loader />
+        <p className="text-center mt-8 text-gray-400">Загрузка офферов...</p>
       ) : (
-        <div className="flex flex-col items-center gap-6">
-          {offers.map(o => <OfferCard key={o.id} {...o} />)}
+        <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
+          {offers.map((offer, i) => (
+            <OfferCard
+              key={offer.id}
+              {...offer}
+              link={customLinks?.[i] || offer.link}
+            />
+          ))}
         </div>
       )}
     </div>

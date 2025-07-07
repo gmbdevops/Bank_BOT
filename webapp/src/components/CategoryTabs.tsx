@@ -8,17 +8,17 @@ const categories: { id: Category; label: string }[] = [
   { id: 'crypto', label: '💰 Крипто' }
 ]
 
-interface CategoryTabsProps {
+export interface CategoryTabsProps {
   selected: Category
-  onChange?: (category: Category) => void
+  onSelect: (category: Category) => void
 }
 
-export default function CategoryTabs({ selected, onChange }: CategoryTabsProps) {
+export const CategoryTabs = ({ selected, onSelect }: CategoryTabsProps) => {
   const navigate = useNavigate()
 
   const handleClick = (categoryId: Category) => {
     navigate(`?category=${categoryId}`)
-    onChange?.(categoryId)
+    onSelect(categoryId)
   }
 
   return (
@@ -30,8 +30,8 @@ export default function CategoryTabs({ selected, onChange }: CategoryTabsProps) 
           className={`px-3 py-2 rounded-md border text-sm font-medium transition
             ${
               id === selected
-                ? 'bg-emerald-500 text-white border-transparent'
-                : 'bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200'
+                ? 'bg-emerald-500 text-white border-transparent shadow'
+                : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
         >
           {label}
