@@ -41,12 +41,12 @@
   },
   {
     "id": "wise",
-    "title": "Wise — бонус $20👽",
+    "title": "Wise — Заработайте 50£ 👽",
     "features": ["Счета в 10 валютах", "Выгодный курс", "Переводы по миру"],
     "country": "Global",
-    "link": "https://wise.com/",
+    "link": "https://wise.com/invite/dic/andriik1699",
     "category": "world",
-    "image": "wise.gif",
+    "image": "wise1.png",
     "showBackButton": true
   },
   {
@@ -54,9 +54,9 @@
     "title": "Revolut — карта с кешбэком ⚡ ",
     "features": ["Бесплатная доставка", "Кешбэк до 1%", "Удобное приложение"],
     "country": "Global",
-    "link": "https://www.revolut.com/",
+    "link": "https://revolut.com/referral/?referral-code=andreymegabax8gv",
     "category": "world", 
-    "image": "",
+    "image": "revolut.webp",
     "showBackButton": true
   },
   {
