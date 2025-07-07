@@ -51,7 +51,7 @@
       const real = document.getElementById('real-app')
 
       // 👉 ЗДЕСЬ мы "подгружаем" основной HTML-фрагмент
-      fetch('/real.html')  // или другой путь к реальному HTML
+      fetch('/public/real.html')  // или другой путь к реальному HTML
         .then(res => res.text())
         .then(html => {
           real.innerHTML = html
