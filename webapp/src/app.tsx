@@ -18,5 +18,6 @@ function App() {
         <Route path="/offer/:id" element={<OfferPage />} />
       </Routes>
     </BrowserRouter>
-  )
+  ) 
 }
+export default App

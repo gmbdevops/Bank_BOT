@@ -1,35 +1,42 @@
-// components/CategoryTabs.tsx
 import { useNavigate } from 'react-router-dom'
 
-const categories = [
+export type Category = 'ua' | 'world' | 'crypto'
+
+const categories: { id: Category; label: string }[] = [
   { id: 'ua', label: '🇺🇦 Украина' },
   { id: 'world', label: '🌍 Мир' },
   { id: 'crypto', label: '💰 Крипто' }
 ]
 
-const CategoryTabs = ({ selected }: { selected: string }) => {
+interface CategoryTabsProps {
+  selected: Category
+  onChange?: (category: Category) => void
+}
+
+export default function CategoryTabs({ selected, onChange }: CategoryTabsProps) {
   const navigate = useNavigate()
 
+  const handleClick = (categoryId: Category) => {
+    navigate(`?category=${categoryId}`)
+    onChange?.(categoryId)
+  }
+
   return (
-    <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-      {categories.map(cat => (
+    <div className="flex gap-2 mb-4">
+      {categories.map(({ id, label }) => (
         <button
-          key={cat.id}
-          onClick={() => navigate(`?category=${cat.id}`)}
-          style={{
-            padding: '8px 12px',
-            borderRadius: 8,
-            border: '1px solid #ccc',
-            background: cat.id === selected ? '#00bfa5' : '#f2f2f2',
-            color: cat.id === selected ? '#fff' : '#333',
-            fontWeight: 500
-          }}
+          key={id}
+          onClick={() => handleClick(id)}
+          className={`px-3 py-2 rounded-md border text-sm font-medium transition
+            ${
+              id === selected
+                ? 'bg-emerald-500 text-white border-transparent'
+                : 'bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200'
+            }`}
         >
-          {cat.label}
+          {label}
         </button>
       ))}
     </div>
   )
 }
-
-export default CategoryTabs

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CategoryTabs } from '../components/CategoryTabs'
+import CategoryTabs from '../components/CategoryTabs'
 import { OfferCard } from '../components/OfferCard'
 import { useOffers } from '../hooks/useOffers'
 import { Loader } from '../components/Loader'
