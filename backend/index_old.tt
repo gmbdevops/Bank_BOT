@@ -1,0 +1,82 @@
+import { Telegraf, Markup, Context } from 'telegraf'
+import { session } from 'telegraf/session'
+import dotenv from 'dotenv'
+import path from 'path'
+import { getOfferKeyboard } from './Keyboard'
+import { getOfferMessage } from './offerHandlers'
+import offersRaw from './offers.json'
+import { Offer } from './types'
+
+dotenv.config({ path: path.resolve(__dirname, '.env') })
+
+const offers: Offer[] = (offersRaw as Offer[]).map(o => ({
+  ...o,
+  category: o.category as 'ua' | 'world' | 'crypto'
+}))
+
+type BotSession = {
+  currentCategory?: string
+  lastCategory?: string
+}
+
+interface BotContext extends Context {
+  session: BotSession
+}
+
+const bot = new Telegraf<BotContext>(process.env.BOT_TOKEN!)
+bot.use(session())
+
+bot.start(async ctx => {
+  ctx.session ??= {}
+  ctx.session.currentCategory = 'ua'
+  ctx.session.lastCategory = undefined
+
+  const filtered = offers.filter(o => o.category === 'ua')
+
+await ctx.replyWithAnimation({
+  source: path.resolve(__dirname, 'img', 'money-5944.gif')
+})
+
+  return ctx.reply(
+    '👋 Добро пожаловать в Bank Easy Bot!\n🇺🇦 Банковские предложения в Украине:',
+    { reply_markup: getOfferKeyboard(filtered, 'ua') }
+  )
+})
+
+bot.action(/^category:(.+)$/, ctx => {
+  ctx.session ??= {}
+  const selected = ctx.match[1]
+  const filtered = offers.filter(o => o.category === selected)
+
+  ctx.session.lastCategory = ctx.session.currentCategory
+  ctx.session.currentCategory = selected
+
+  return ctx.reply(`📂 ${selected.toUpperCase()} предложения:`, {
+    reply_markup: getOfferKeyboard(filtered, selected)
+  })
+})
+
+bot.action(/^offer:(.+)$/, async ctx => {
+  ctx.session ??= {}
+  const id = ctx.match[1]
+  const offer = offers.find(o => o.id === id)
+  if (!offer) return ctx.reply('❌ Предложение не найдено.')
+
+  const message = getOfferMessage(offer)
+  const category = ctx.session.currentCategory || 'ua'
+
+await ctx.replyWithPhoto({
+  source: path.resolve(__dirname, 'img', offer.image)
+}, {
+  caption: message,
+  parse_mode: 'Markdown',
+  reply_markup: Markup.inlineKeyboard([
+    [Markup.button.url('✅ Получить', offer.link)],
+    [Markup.button.callback('← Назад к предложениям', `category:${category}`)]
+  ]).reply_markup
+})
+
+})
+
+bot.launch()
+console.log('🤖 Бот запущен и готов к работе!')
